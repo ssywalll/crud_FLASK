@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <title>Flask Demo</title>
+</head>
+<body>
+
+    <div class="container-fluid">
+        <h1 class="text-center alert alert-danger">Python Flask Fetch Data From Api</h1>
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                <h2 class="">Users List <button class="btn btn-primary float-end" type="submit">Next Page</button></h2>
+                {%with messages= get_flashed_messages()%}
+                {%if messages%}
+                {% for messages in messages%}
+                <div class="alert alert-success alert-dismissable" role="alert">
+                    {{messages}}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close">
+                        <!-- <span aria-hidden="true">&times;</span> -->
+                    </button>
+                </div>
+                {%endfor%}
+                {%endif%}
+                {%endwith%}
+
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">id</th>
+                            <th scope="col">email</th>
+                            <th scope="col">firstname</th>
+                            <th scope="col">lastname</th>
+                            <th scope="col">action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in data%}
+                        <tr>
+                            <td>{{row['id']}}</td>
+                        <td>{{row['email']}}</td>
+                        <td>{{row['first_name']}}</td>
+                        <td>{{row['last_name']}}</td>
+                        <td>
+                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalview{{row['id']}}">View</button>
+                        </td>
+                        </tr>
+
+                        <div id="modalview{{row['id']}}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">View User</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+        
+                                    <div class="modal-body">
+                                        <img src="{{ row['avatar']}}" class="card-img-top object-fit-contain border rounded m-4" style="width: 420px;" alt="...">
+                                        <input type="hidden" name="id" value="{{ row.0 }}">
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email address</label>
+                                            <input type="email" value="{{ row['email'] }}" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="firstname" class="form-label">First Name</label>
+                                            <input type="text" value="{{ row['first_name'] }}" class="form-control" id="firstname" name="firstname">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="lastname" class="form-label">Last Name</label>
+                                            <input type="text" value="{{ row['last_name'] }}" class="form-control" id="lastname" name="lastname">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
+</html>

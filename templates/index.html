@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <title>Flask Demo</title>
+</head>
+<body>
+
+    <div class="container-fluid">
+        <h1 class="text-center alert alert-danger">Python Flask CRUD Application</h1>
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                <h2 class="">Users List <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#myModal">Add user</button></h2>
+                {%with messages= get_flashed_messages()%}
+                {%if messages%}
+                {% for messages in messages%}
+                <div class="alert alert-success alert-dismissable" role="alert">
+                    {{messages}}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close">
+                        <!-- <span aria-hidden="true">&times;</span> -->
+                    </button>
+                </div>
+                {%endfor%}
+                {%endif%}
+                {%endwith%}
+
+                <div id="myModal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add New User</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <form action="{{ url_for('insert') }}" method="POST">
+                                    <div class="mb-3">
+                                      <label for="email" class="form-label">Email address</label>
+                                      <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+                                      <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+                                    </div>
+                                    <div class="mb-3">
+                                      <label for="firstname" class="form-label">First Name</label>
+                                      <input type="text" class="form-control" id="firstname" name="firstname">
+                                    </div>
+                                    <div class="mb-3">
+                                      <label for="lastname" class="form-label">Last Name</label>
+                                      <input type="text" class="form-control" id="lastname" name="lastname">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="avatar" class="form-label">Avatar</label>
+                                        <input class="form-control" type="file" id="avatar" name="avatar">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                  </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">id</th>
+                            <th scope="col">email</th>
+                            <th scope="col">firstname</th>
+                            <th scope="col">lastname</th>
+                            <th scope="col">action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in users%}
+                        <tr>
+                            <td>{{row.0}}</td>
+                            <td>{{row.1}}</td>
+                            <td>{{row.2}}</td>
+                            <td>{{row.3}}</td>
+                            <td>
+                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalview{{row.0}}">View</button>
+                                <a href="/update/{{row.0}}" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modaledit{{row.0}}">Edit</a>
+                                <a href="/delete/{{row.0}}" onclick="return confirm('Are Sure Want To Deleted ?')" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+
+                        <div id="modaledit{{row.0}}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">EDit User</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+        
+                                    <div class="modal-body">
+                                        <form action="{{ url_for('update') }}" method="POST">
+                                            <input type="hidden" name="id" value="{{ row.0 }}">
+                                            <div class="mb-3">
+                                              <label for="email" class="form-label">Email address</label>
+                                              <input type="email" value="{{ row.1 }}" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+                                              <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+                                            </div>
+                                            <div class="mb-3">
+                                              <label for="firstname" class="form-label">First Name</label>
+                                              <input type="text" value="{{ row.2 }}" class="form-control" id="firstname" name="firstname">
+                                            </div>
+                                            <div class="mb-3">
+                                              <label for="lastname" class="form-label">Last Name</label>
+                                              <input type="text" value="{{ row.3 }}" class="form-control" id="lastname" name="lastname">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="avatar" class="form-label">Avatar</label>
+                                                <input value="{{ row.4 }}" class="form-control" type="file" id="avatar" name="avatar">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                          </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="modalview{{row.0}}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">View User</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+        
+                                    <div class="modal-body">
+                                        <img src="{{ row.4}}" class="card-img-top object-fit-contain border rounded m-4" style="width: 420px;" alt="...">
+                                        <input type="hidden" name="id" value="{{ row.0 }}">
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email address</label>
+                                            <input type="email" value="{{ row.1 }}" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="firstname" class="form-label">First Name</label>
+                                            <input type="text" value="{{ row.2 }}" class="form-control" id="firstname" name="firstname">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="lastname" class="form-label">Last Name</label>
+                                            <input type="text" value="{{ row.3 }}" class="form-control" id="lastname" name="lastname">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
+</html>
